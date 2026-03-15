@@ -19,36 +19,33 @@ export function main(dtoIn)
  */
 export function generateEmployeeData(dtoIn) {
 
-  const maleNames = ["Tomas", "Jan", "Pepa", "Petr", "Martin"];
-  const femaleNames = ["Katka", "Veronika", "Lenka", "Lucie", "Michaela"];
   const employees = [];
   const now = new Date();
 
-  const workloads = [0.25, 0.5, 0.75, 1];
+  const pattern = [
+    { name: "Jan", surname: "Svoboda", gender: "male", count: 20, workload: 0.5 },
+    { name: "Pepa", surname: "Dvořák", gender: "male", count: 10, workload: 0.5 },
+    { name: "Aneta", surname: "Svobodová", gender: "female", count: 9, workload: 0.5 },
+    { name: "Jana", surname: "Nováková", gender: "female", count: 6, workload: 0.5 },
+    { name: "Katka", surname: "Nováková", gender: "female", count: 5, workload: 0.5 }
+  ];
 
-  for (let i = 0; i < dtoIn.count; i++) {
-
-    const gender = Math.random() < 0.5 ? "male" : "female";
-    const name =
-      gender === "male"
-        ? maleNames[Math.floor(Math.random() * maleNames.length)]
-        : femaleNames[Math.floor(Math.random() * femaleNames.length)];
-
-    const workload = workloads[Math.floor(Math.random() * workloads.length)];
-
-    const randomAge = dtoIn.age.min + Math.random() * (dtoIn.age.max - dtoIn.age.min);
-    const days = randomAge * 365.25;
-    const birthDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
-
-    employees.push({
-      id: i + 1,
-      name,
-      gender,
-      workload,
-      birthdate: birthDate.toISOString()
-    });
+  let id = 1;
+  for (const entry of pattern) {
+    for (let i = 0; i < entry.count && employees.length < dtoIn.count; i++) {
+      const randomAge = dtoIn.age.min + ((id - 1) % (dtoIn.age.max - dtoIn.age.min + 1));
+      const days = randomAge * 365.25;
+      const birthDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+      employees.push({
+        id: id++,
+        name: entry.name,
+        surname: entry.surname,
+        gender: entry.gender,
+        workload: entry.workload,
+        birthdate: birthDate.toISOString()
+      });
+    }
   }
-
   return employees;
 }
 
