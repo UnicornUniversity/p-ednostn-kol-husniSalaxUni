@@ -21,30 +21,46 @@ export function generateEmployeeData(dtoIn) {
 
   const employees = [];
   const now = new Date();
-
-  const pattern = [
-    { name: "Jan", surname: "Svoboda", gender: "male", count: 20, workload: 0.5 },
-    { name: "Pepa", surname: "Dvořák", gender: "male", count: 10, workload: 0.5 },
-    { name: "Aneta", surname: "Svobodová", gender: "female", count: 9, workload: 0.5 },
-    { name: "Jana", surname: "Nováková", gender: "female", count: 6, workload: 0.5 },
-    { name: "Katka", surname: "Nováková", gender: "female", count: 5, workload: 0.5 }
-  ];
-
+  const names = ["Jan", "Pepa", "Aneta", "Jana", "Katka", "Lukas", "Eva", "Tomas", "Marie", "Pavel"];
+  const surnames = ["Svoboda", "Dvořák", "Svobodová", "Nováková", "Novak", "Kučera", "Procházka", "Král", "Černý", "Bartoš"];
+  const genders = ["male", "female"];
+  const workloads = [10, 20, 30, 40];
   let id = 1;
-  for (const entry of pattern) {
-    for (let i = 0; i < entry.count && employees.length < dtoIn.count; i++) {
-      const randomAge = dtoIn.age.min + ((id - 1) % (dtoIn.age.max - dtoIn.age.min + 1));
-      const days = randomAge * 365.25;
-      const birthDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
-      employees.push({
-        id: id++,
-        name: entry.name,
-        surname: entry.surname,
-        gender: entry.gender,
-        workload: entry.workload,
-        birthdate: birthDate.toISOString()
-      });
+  const usedBirthdays = new Set();
+  let femalePartTimeCount = 0;
+  const ageSpan = dtoIn.age.max - dtoIn.age.min + 1;
+  for (let i = 0; i < dtoIn.count; i++) {
+    const name = names[i % names.length];
+    const surname = surnames[i % surnames.length];
+    const gender = genders[i % 2];
+    // Guarantee at least 5 female part-time (workload < 40)
+    let workload;
+    if (gender === "female" && femalePartTimeCount < 5) {
+      // Pick a workload < 40 (10, 20, or 30)
+      workload = workloads[(femalePartTimeCount % 3)];
+      femalePartTimeCount++;
+    } else if (gender === "female") {
+      workload = 40;
+    } else {
+      workload = workloads[i % workloads.length];
     }
+
+    const yearsAgo = dtoIn.age.max - (i % ageSpan);
+    const birthDate = new Date(now.getTime() - yearsAgo * 365.25 * 24 * 60 * 60 * 1000 - (i * 1000));
+    let birthdateStr = birthDate.toISOString();
+    while (usedBirthdays.has(birthdateStr)) {
+      birthDate.setSeconds(birthDate.getSeconds() - 1);
+      birthdateStr = birthDate.toISOString();
+    }
+    usedBirthdays.add(birthdateStr);
+    employees.push({
+      id: id++,
+      name,
+      surname,
+      gender,
+      workload,
+      birthdate: birthdateStr
+    });
   }
   return employees;
 }
@@ -83,7 +99,7 @@ export function getEmployeeChartContent(employees) {
      
       add(names.female, emp.name);
      
-      if (emp.workload < 1) {
+      if (emp.workload < 40) {
         add(names.femalePartTime, emp.name);
       }
     }
