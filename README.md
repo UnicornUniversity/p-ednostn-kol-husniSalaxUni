@@ -1,6 +1,6 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/aOxYvHKO)
 **Toto je základní kód k přednostnímu odevzdání úkolu 5 z BSDE (Základy softwarového vývoje) pro distanční studium v češtině.**
-** TEST
+
 Zadání úkolu 5 je [zde](https://uuapp.plus4u.net/uu-managementkit-maing02/38744216cb324edca986789798259ba9/document?oid=67a9e77b1cb9350216de430d&pageOid=67a9e784c7d8a680ccbb513d).
 To obsahuje ale i úkol 3, zadání [zde](https://uuapp.plus4u.net/uu-managementkit-maing02/38744216cb324edca986789798259ba9/document?oid=67a9e66b1cb9350216de3144&pageOid=67a9e6731cb9350216de31df).
 
